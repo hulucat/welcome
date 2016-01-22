@@ -23,11 +23,12 @@ func StartCamera() {
 		conf.Get("face_api_key"),
 		conf.Get("face_secret"),
 	}
-	timer := time.NewTicker(10 * time.Second)
+	timer := time.NewTicker(3 * time.Second)
 	for {
 		select {
 		case <-timer.C:
 			detect("/var/www/html/pi.jpg")
+			//detect("/tmp/1.jpg")
 		}
 	}
 }
