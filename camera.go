@@ -23,7 +23,7 @@ func StartCamera() {
 		conf.Get("face_api_key"),
 		conf.Get("face_secret"),
 	}
-	timer := time.NewTicker(3 * time.Second)
+	timer := time.NewTicker(5 * time.Second)
 	for {
 		select {
 		case <-timer.C:
