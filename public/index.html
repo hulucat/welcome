@@ -15,12 +15,20 @@
   <body>
     <div id="header"></div>
     <div class="container">
+      <div class="text-center">
+        <h2>&nbsp;</h2>
+      </div>
     	<div class="row">
-    		<img src="/Users/wangzheng/dev/go/src/welcome/1.jpg" />
-    	<div>
-      	<div id="out" class="row">
-        	
-      	</div>
+        <div id="photo" class="col-md-5 col-sm-5 col-lg-5 text-right text-bottom">
+    		  
+        </div>
+        <div id="recommand" class="col-md-5 col-sm-5 col-lg-5 col-md-offset-2 col-lg-offset-2 col-sm-offset-2 text-left">
+          
+        </div>
+    	</div>
+    	<div id="out" class="row">
+      <hr>	
+    	</div>
     </div>
 <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
 <script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -36,6 +44,7 @@ function initWs(){
 		$("#out").append("WebSocket is open <br>")
 	};
 	ws.onmessage = function(evt){
+    // {"people":[{"age":22,"gender":"Female","glass":"None"}],"product":{"id":"18528","name":"好奇而已纯白诱惑","img":"http://img.ubox.cn/box-tmp/m/18528/18528.jpg?t=20140305101413"}} 
 		$("#out").append("Msg received: "+evt.data + "<br>");
 		handleDown(evt.data);
 	};
@@ -47,11 +56,27 @@ function initWs(){
 	};
 }
 function handleDown(data){
+  $("#recommand").fadeOut();
+  $("#photo").fadeOut();
 	var msg = eval('(' + data + ')');
-	for(var i in msg){
-		var face = msg[i];
-		//alert("age: "+face.age+", gender: "+ face.gender+", glass: "+ face.glass)
-	}
+  var filePath = msg.file + "?v=" + (new Date()).getTime();
+  $("#photo").html("<img src='" + filePath + "' width='200px'>");
+  $("#photo").fadeIn();
+  var people = msg.people;
+  var product = msg.product;
+  var content = "<p>";
+  if(product!=null){
+    content += "<img src='" + product.img + "' alt='" + product.name+"'><br/>";  
+    for(var i in people){
+      var person = people[i];
+      content += "Gender: " + person.gender+ ", Age: " + person.age + ", Glass: " + person.glass + "<br>";
+    }
+    content += "为您推荐：" + product.name + "<br>";
+  }
+  
+  content += Date() + "</p>";
+  $("#recommand").html(content);
+  $("#recommand").fadeIn();
 }
 function bindEvents(){
 

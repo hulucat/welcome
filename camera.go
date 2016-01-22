@@ -27,7 +27,7 @@ func StartCamera() {
 	for {
 		select {
 		case <-timer.C:
-			detect("./1.jpg")
+			detect("/var/www/html/pi.jpg")
 		}
 	}
 }
@@ -40,21 +40,16 @@ func detect(filePath string) {
 	}
 	utils.Debugf("Detect result: sessionId=%s, faces: %d", sessionId, len(faces))
 	if len(faces) < 1 {
-		return
-	}
-	people := make([]*Person, len(faces))
-	for i, face := range faces {
-		people[i] = &Person{
-			Age:    face.Attrs.Age.Value,
-			Gender: face.Attrs.Gender.Value,
-			Glass:  face.Attrs.Glass.Value,
-		}
-	}
-	if WebSocketConn != nil {
-		if err = WebSocketConn.WriteJSON(people); err != nil {
-			utils.Errorf("Error write json to websocket: %s", err.Error())
-		}
+		Recommand(filePath, nil)
 	} else {
-		utils.Debugf("Websocket is nil")
+		people := make([]*Person, len(faces))
+		for i, face := range faces {
+			people[i] = &Person{
+				Age:    face.Attrs.Age.Value,
+				Gender: face.Attrs.Gender.Value,
+				Glass:  face.Attrs.Glass.Value,
+			}
+		}
+		Recommand(filePath, people)
 	}
 }
